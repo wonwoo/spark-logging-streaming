@@ -17,14 +17,16 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 public final class JavaKafkaStreaming {
-
-  static ObjectMapper mapper = new ObjectMapper();
-
   private JavaKafkaStreaming() {
   }
 
+  private static ObjectMapper mapper = new ObjectMapper();
+
   private static String PATH = "/Users/wonwoo/temp/spark/files/logs";
   private static String CHECK_POINT = "/Users/wonwoo/temp/spark/checkout";
+  private static String TOPIC = "test";
+  private static String ZK = "127.0.0.1:2181";
+  private static String GROUP = "group";
 
   public static void main(String[] args) throws Exception {
 //    System.setProperty("hadoop.home.dir", "D:\\hadoop-common-2.2.0-bin-master");
@@ -34,13 +36,13 @@ public final class JavaKafkaStreaming {
     jssc.checkpoint(CHECK_POINT);
     int numThreads = Integer.parseInt("1");
     Map<String, Integer> topicMap = new HashMap<>();
-    String[] topics = "test".split(",");
+    String[] topics = TOPIC.split(",");
     for (String topic : topics) {
       topicMap.put(topic, numThreads);
     }
 
     JavaPairReceiverInputDStream<String, String> messages =
-      KafkaUtils.createStream(jssc, "127.0.0.1:2181", "group", topicMap);
+      KafkaUtils.createStream(jssc, ZK, GROUP, topicMap);
 
     JavaDStream<String> wordCounts = messages.map(tweet -> mapper.writeValueAsString(tweet));
 
