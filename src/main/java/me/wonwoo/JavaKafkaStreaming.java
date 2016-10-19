@@ -11,6 +11,7 @@ import org.apache.spark.streaming.api.java.JavaDStream;
 import org.apache.spark.streaming.api.java.JavaPairReceiverInputDStream;
 import org.apache.spark.streaming.api.java.JavaStreamingContext;
 import org.apache.spark.streaming.kafka.KafkaUtils;
+import scala.Tuple2;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -44,7 +45,7 @@ public final class JavaKafkaStreaming {
     JavaPairReceiverInputDStream<String, String> messages =
       KafkaUtils.createStream(jssc, ZK, GROUP, topicMap);
 
-    JavaDStream<String> wordCounts = messages.map(tweet -> mapper.writeValueAsString(tweet));
+    JavaDStream<String> wordCounts = messages.map(Tuple2::_2);
 
 //        JavaDStream<String> lines = messages.map((Function<Tuple2<String, String>, String>) Tuple2::_2);
 //
